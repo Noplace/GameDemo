@@ -4,7 +4,7 @@
 #include <WinCore/types.h>
 #include <WinCore/timer/timer2.h>
 #include <WinCore/windows/windows.h>
-#include <GameEngine/game_engine.h>
+#include <Aurora/Code/game_engine.h>
 #include "scene1.h"
 #include "scene2.h"
 

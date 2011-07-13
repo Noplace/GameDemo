@@ -1,6 +1,6 @@
-#include <GameEngine/game_engine.h>
-#include <GameEngine/game_view.h>
-#include <GameEngine/resource/texture_resource.h>
+#include <Aurora/Code/game_engine.h>
+#include <Aurora/Code/game_view.h>
+#include <Aurora/Code/resource/texture_resource.h>
 
 class MainScene2 : public game_engine::GameView {
  public:

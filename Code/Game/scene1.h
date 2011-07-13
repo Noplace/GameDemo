@@ -1,5 +1,5 @@
-#include <GameEngine/game_engine.h>
-#include <GameEngine/game_view.h>
+#include <Aurora/Code/game_engine.h>
+#include <Aurora/Code/game_view.h>
 
 class MainScene1 : public game_engine::GameView {
  public:

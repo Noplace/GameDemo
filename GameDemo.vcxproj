@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>NotSet</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -95,6 +95,17 @@
     <None Include="Content\Shaders\main.fx" />
     <None Include="Content\Shaders\main2d.fx" />
     <None Include="Content\test.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aurora\Aurora.vcxproj">
+      <Project>{ca0ad06b-56ea-47b5-8572-3b18eb828ecc}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\VisualEssence\VisualEssence.vcxproj">
+      <Project>{b5fda7c1-8125-4e2f-ba95-8a7e7cce635e}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\WinCore\WinCore.vcxproj">
+      <Project>{43ac74e9-a89d-4e31-8c01-fa2cce27f5c2}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
