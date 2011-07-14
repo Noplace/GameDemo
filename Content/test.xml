@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <resource uid="0" scope="1" type="1" filename="/Content/package1.zip/texture1.png"></resource>
+  <resource uid="1" scope="1" type="1" filename="Content\arial31_0.png"></resource>
+  <resource uid="2" scope="1" type="4" filename="Content\Shaders\main.fx"></resource>
+  <resource uid="3" scope="1" type="4" filename="Content\Shaders\main2d.fx"></resource>
+  <resource uid="4" scope="1" type="4" filename="Content\Shaders\font.fx"></resource>
+</resources>
