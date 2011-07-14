@@ -12,7 +12,7 @@
 
 namespace my_app {
 
-//const double M_PI = 3.141592653589793238460;
+//const double M_PI = 3.14159265358979323846;
 
 DisplayWindow::DisplayWindow() : core::windows::Window() {
   
