@@ -5,4 +5,7 @@
   <resource uid="2" scope="1" type="4" filename="Content\Shaders\main.fx"></resource>
   <resource uid="3" scope="1" type="4" filename="Content\Shaders\main2d.fx"></resource>
   <resource uid="4" scope="1" type="4" filename="Content\Shaders\font.fx"></resource>
+  <resource uid="5" scope="1" type="1" filename="Content\Fonts\v1_0.png"></resource>
+  <resource uid="6" scope="1" type="1" filename="Content\Fonts\v1_1.png"></resource>
+  <resource uid="7" scope="1" type="5" filename="Content\Fonts\v1.fnt"></resource>
 </resources>

@@ -1,6 +1,6 @@
 #include <Aurora/Code/game_engine.h>
 #include <Aurora/Code/game_view.h>
-#include <Aurora/Code/resource/texture_resource.h>
+
 
 class MainScene2 : public game_engine::GameView {
  public:
@@ -21,4 +21,5 @@ class MainScene2 : public game_engine::GameView {
   //ID3D11ShaderResourceView*           g_pTextureRV ;
   XMMATRIX world;
   game_engine::resource::TextureResource* tex_res1;
+  acGraphics::Font* font;
 };

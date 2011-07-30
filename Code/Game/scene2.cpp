@@ -37,11 +37,14 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
 
     font_writer_.Initialize(&engine_->gfx_context());
     {
-      FILE *f;
-      fopen_s(&f,"Content\\arial31.fnt", "rb");
-      acGraphics::FontLoaderBinaryFormat font_loader(f,"Content\\arial31.fnt");
-      acGraphics::Font* font = font_loader.GenerateFont();
-    
+      game_engine::resource::FontResource* fr = (game_engine::resource::FontResource*)engine_->resource_manager.GetResourceById(7);
+      //acGraphics::FontLoaderBinaryFormat font_loader(engine_->resource_manager.GetResourceById(7)->filename());
+      font = fr->font();//font_loader.GenerateFont();
+      game_engine::resource::TextureResource* p1 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(5);
+      game_engine::resource::TextureResource* p2 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(6);
+      font->pages[0] = (p1->srv());
+      font->pages[1] = (p2->srv());
+
       font_writer_.set_font(font);
       font_writer_.set_effect(&font_effect_);
     }
@@ -149,7 +152,8 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
       return hr;
 
   // Load the Texture
-  tex_res1 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(1);
+  //tex_res1 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(5);
+  
 
 
   // Initialize the world matrices
@@ -165,8 +169,8 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
   move_z=0;
   motion1.Play();
 
-  font_writer_.PrepareWrite(10);
-  font_writer_.Write(0,0,0,"hello12345",10,0);
+  font_writer_.PrepareWrite(51);
+  
   return S_OK; 
 }
 
@@ -187,6 +191,8 @@ int MainScene2::Deinitialize() {
   return S_OK;
 }
 
+char status1[20];
+
 void MainScene2::Draw() {
 
   
@@ -195,7 +201,7 @@ void MainScene2::Draw() {
   UINT offset = 0;
   engine_->gfx_context().SetVertexBuffers(0,1,&g_vb,&stride,&offset);
   engine_->gfx_context().ClearIndexBuffer();
-  engine_->gfx_context().device_context()->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+  engine_->gfx_context().SetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
 
   // Update our time
   static float t = 0.0f;
@@ -206,6 +212,8 @@ void MainScene2::Draw() {
       if( dwTimeStart == 0 )
           dwTimeStart = dwTimeCur;
       t = ( dwTimeCur - dwTimeStart ) / 1000000.0f;
+      sprintf(status1,"T: %f",t);
+      font_writer_.Write(0,0,0,status1,strlen(status1),0);
   }
 
   //camera_.view() = XMMatrixScaling(t,t,0);// * XMMatrixTranslation(0.5,0,0);
@@ -244,8 +252,8 @@ void MainScene2::Draw() {
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
   //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->VSSetConstantBuffers( 2, 1, &g_pCBChangesEveryFrame );
   //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetConstantBuffers( 2, 1, &g_pCBChangesEveryFrame );
-  ID3D11ShaderResourceView* src = tex_res1->srv();
-  ((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetShaderResources(0,1,&src);
+  //ID3D11ShaderResourceView* src = tex_res1->srv();
+  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetShaderResources(0,1,&font_writer_.font()->pages[0]);
   //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->Draw(4,0);
 
 
@@ -258,7 +266,7 @@ void MainScene2::Draw() {
 
   
 
-  font_writer_.Draw(10);
+  font_writer_.Draw(20);
 }
 
 

@@ -58,5 +58,12 @@
     <None Include="Content\Shaders\font.fx" />
     <None Include="Content\Shaders\main2d.fx" />
     <None Include="Content\Shaders\main.fx" />
+    <None Include="Content\Fonts\v1.fnt" />
+    <None Include="Content\Fonts\v1_0.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Content\Fonts\v1_1.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

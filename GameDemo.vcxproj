@@ -91,6 +91,9 @@
     <None Include="Content\arial31_0.png" />
     <None Include="Content\Fonts\arial24.fnt" />
     <None Include="Content\Fonts\arial24_00.png" />
+    <None Include="Content\Fonts\v1.fnt" />
+    <None Include="Content\Fonts\v1_0.png" />
+    <None Include="Content\Fonts\v1_1.png" />
     <None Include="Content\Shaders\font.fx" />
     <None Include="Content\Shaders\main.fx" />
     <None Include="Content\Shaders\main2d.fx" />
