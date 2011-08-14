@@ -30,17 +30,18 @@ int MainScene1::Initialize(game_engine::Engine* engine) {
   GameView::Initialize(engine);
   
   //core::delegation::one::pair<graphics::Effect,int,void> p(&main_effect_,0);
-  func.Bind<graphics::Effect>(&main_effect_,&graphics::Effect::Begin);
-  func = core::delegation::none::pair<graphics::Effect,int>(&main_effect_,&graphics::Effect::Begin);
+  func.Bind<graphics::Effect>(main_effect_,&graphics::Effect::Begin);
+  func = core::delegation::none::pair<graphics::Effect,int>(main_effect_,&graphics::Effect::Begin);
 
-  game_engine::resource::Resource* res = engine_->resource_manager.GetResourceById(2);
-    
-  main_effect_.Initialize(&engine_->gfx_context());
+  game_engine::resource::EffectResource* res = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(2);
+  main_effect_ = res->effect();
+  /*main_effect_.Initialize(&engine_->gfx_context());
   int hr;
   hr = main_effect_.CreateFromMemory(res->data_pointer,res->data_length);
   if (FAILED(hr)) {
     return hr;
-  }
+  }*/
+  int hr;
 
   // Initialize the view matrix
   XMVECTOR Eye = XMVectorSet( 0.0f, 3.0f, -6.0f, 0.0f );
@@ -204,7 +205,6 @@ int MainScene1::Deinitialize() {
   }
   SafeRelease(&blend_state);
 
-  main_effect_.Deinitialize();
   return S_OK;
 }
 
@@ -218,7 +218,7 @@ void MainScene1::Draw() {
     // Set primitive topology
   engine_->gfx_context().device_context()->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
 
-   main_effect_.Begin();
+  main_effect_->Begin();
 
   // Update our time
   static float t = 0.0f;

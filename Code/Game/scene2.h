@@ -10,8 +10,8 @@ class MainScene2 : public game_engine::GameView {
   int Deinitialize();
   void Draw();
  private:
-  graphics::Effect main_effect_;
-  graphics::Effect font_effect_;
+  graphics::Effect* main_effect_;
+  
   float move_z;
   core::animation::CubicMotion motion1;
   graphics::font::Writer font_writer_;

@@ -1,5 +1,4 @@
 #include "scene2.h"
-#include <VisualEssence/Code/font/bmfont/font_loader.h>
 
 struct SimpleVertex
 {
@@ -23,38 +22,41 @@ ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
 int MainScene2::Initialize(game_engine::Engine* engine) { 
   GameView::Initialize(engine);
 
-  game_engine::resource::Resource* shader_res = engine_->resource_manager.GetResourceById(3);
-
-  main_effect_.Initialize(&engine_->gfx_context());
+  game_engine::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(3);
+ 
+ // main_effect_.Initialize(&engine_->gfx_context());
   
   {
-    font_effect_.Initialize(&engine_->gfx_context());
+    //font_effect_.Initialize(&engine_->gfx_context());
     {
-      game_engine::resource::Resource* font_shader_res = engine_->resource_manager.GetResourceById(4);
-      int hr = font_effect_.CreateFromMemory(font_shader_res->data_pointer,font_shader_res->data_length);
+      
+      //graphics::Effect font_effect_;
+      //int hr = font_effect_.CreateFromMemory(font_shader_res->data_pointer,font_shader_res->data_length);
     }
   
 
     font_writer_.Initialize(&engine_->gfx_context());
     {
-      game_engine::resource::FontResource* fr = (game_engine::resource::FontResource*)engine_->resource_manager.GetResourceById(7);
+      game_engine::resource::EffectResource* font_effect_ = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(4);
+      game_engine::resource::FontResource* fr = engine_->resource_manager.GetResourceById<game_engine::resource::FontResource>(7);
       //acGraphics::FontLoaderBinaryFormat font_loader(engine_->resource_manager.GetResourceById(7)->filename());
       font = fr->font();//font_loader.GenerateFont();
-      game_engine::resource::TextureResource* p1 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(5);
-      game_engine::resource::TextureResource* p2 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(6);
+      game_engine::resource::TextureResource* p1 = engine_->resource_manager.GetResourceById<game_engine::resource::TextureResource>(5);
+      game_engine::resource::TextureResource* p2 = engine_->resource_manager.GetResourceById<game_engine::resource::TextureResource>(6);
       font->pages[0] = (p1->srv());
       font->pages[1] = (p2->srv());
 
       font_writer_.set_font(font);
-      font_writer_.set_effect(&font_effect_);
+      font_writer_.set_effect(font_effect_->effect());
     }
   }
 
   int hr;
-  hr = main_effect_.CreateFromMemory(shader_res->data_pointer,shader_res->data_length);
+  main_effect_ = shader_res->effect();
+  /*hr = main_effect_.CreateFromMemory(shader_res->data_pointer,shader_res->data_length);
   if (FAILED(hr)) {
     return hr;
-  }
+  }*/
 
   D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
   // Clear the second depth stencil state before setting the parameters.
@@ -163,7 +165,7 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
   motion1.set_context(&engine_->animation());
   motion1.set_from(0);
   motion1.set_to(400);
-  motion1.set_max_time(1000000);
+  motion1.set_max_time(10000);
   motion1.set_value_ptr(&move_z);
   engine_->animation().tween_list.push_back(&motion1);
   move_z=0;
@@ -186,7 +188,7 @@ int MainScene2::Deinitialize() {
   }
   SafeRelease(&blend_state);
   SafeRelease(&m_depthDisabledStencilState);
-  main_effect_.Deinitialize();
+
   font_writer_.Deinitialize();
   return S_OK;
 }
@@ -232,7 +234,7 @@ void MainScene2::Draw() {
 
 
 
-  main_effect_.Begin();
+  main_effect_->Begin();
   camera_.SetConstantBuffer(0);
 
   CBChangesEveryFrame cb;
@@ -254,7 +256,7 @@ void MainScene2::Draw() {
   //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetConstantBuffers( 2, 1, &g_pCBChangesEveryFrame );
   //ID3D11ShaderResourceView* src = tex_res1->srv();
   //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetShaderResources(0,1,&font_writer_.font()->pages[0]);
-  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->Draw(4,0);
+  ((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->Draw(4,0);
 
 
   //world = XMMatrixTranslation(move_z,200,0);

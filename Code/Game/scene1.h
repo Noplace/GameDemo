@@ -9,7 +9,7 @@ class MainScene1 : public game_engine::GameView {
   int Deinitialize();
   void Draw();
  private:
-  graphics::Effect main_effect_;
+  graphics::Effect* main_effect_;
   float move_z;
   core::animation::CubicMotion motion1;
 graphics::Buffer                    g_vb;

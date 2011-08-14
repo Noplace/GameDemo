@@ -10,6 +10,7 @@
 Texture2D textPage1 : register( t0 );
 Texture2D textPage2 : register( t1 );
 Texture2D textPage3 : register( t2 );
+
 SamplerState samLinear
 {
 Filter = MIN_MAG_MIP_LINEAR;
@@ -27,12 +28,12 @@ cbuffer cbCamera : register( b0 )
 	matrix Projection;
 };
 
-cbuffer cbChangesEveryFrame : register( b2 )
+cbuffer cbMisc : register ( b1 )
 {
-    matrix World;
-    float4 vMeshColor;
+	matrix worldTransform;
+	float globalAlpha;
+	float4 globalColor;
 };
-
 
 //--------------------------------------------------------------------------------------
 struct VS_INPUT
@@ -59,9 +60,10 @@ struct PS_INPUT
 PS_INPUT VS( VS_INPUT input )
 {
     PS_INPUT output = (PS_INPUT)0;
-    //output.Pos = mul(  float4(input.Pos,0,1), World );
-    output.Pos = mul( float4(input.Pos,0,1), View );
-    output.Pos = mul( output.Pos, Projection );
+	float4 pos = float4(input.Pos,0,1);
+    pos = mul(  pos, worldTransform );
+    pos = mul( pos, View );
+    output.Pos = mul( pos, Projection );
     output.Tex = input.Tex;
 	output.Col = input.Col; 
 	output.Channel = input.Channel;
@@ -96,7 +98,8 @@ float4 PS( PS_INPUT input) : SV_Target
         pixel.rgb = 1;
         pixel.a   = val;
     }
-
+	//pixel.rgb = globalColor.rgb;
+	pixel.a = pixel.a * globalAlpha;
 	return pixel * input.Col;
 
 	//return input.Col * textPage1.Sample( samLinear, input.Tex ) ;
