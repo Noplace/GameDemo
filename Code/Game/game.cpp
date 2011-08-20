@@ -21,6 +21,11 @@ class MainScene3 : public game_engine::GameView {
     mainscene1.Deinitialize();
     return S_OK;
   }
+
+  void Update(float delta_time) {
+    mainscene2.Update(delta_time);
+  }
+
   void Draw() {
     //mainscene1.Draw();
     mainscene2.Draw();

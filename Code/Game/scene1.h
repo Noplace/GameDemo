@@ -7,6 +7,7 @@ class MainScene1 : public game_engine::GameView {
   ~MainScene1() {}
   int Initialize(game_engine::Engine* engine);
   int Deinitialize();
+  void Update(float delta_time);
   void Draw();
  private:
   graphics::Effect* main_effect_;

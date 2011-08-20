@@ -208,6 +208,10 @@ int MainScene1::Deinitialize() {
   return S_OK;
 }
 
+void MainScene1::Update(float delta_time) {
+
+}
+
 void MainScene1::Draw() {
     
 
@@ -225,7 +229,7 @@ void MainScene1::Draw() {
  
   {
       static DWORD dwTimeStart = 0;
-      DWORD dwTimeCur = (DWORD)engine_->global_time();
+      DWORD dwTimeCur = (DWORD)engine_->total_cycles();
       if( dwTimeStart == 0 )
           dwTimeStart = dwTimeCur;
       t = ( dwTimeCur - dwTimeStart ) / 1000000.0f;

@@ -35,8 +35,8 @@ cbuffer cbCamera : register( b0 )
 
 cbuffer cbChangesEveryFrame : register( b2 )
 {
-    matrix World;
-    float4 vMeshColor;
+    matrix world;
+    float4 ps_color;
 };
 
 
@@ -63,7 +63,7 @@ PS_INPUT VS( VS_INPUT input )
 	//PS_INPUT output = (PS_INPUT)0;
 	//return input;
     PS_INPUT output = (PS_INPUT)0;
-    output.Pos = mul(  float4(input.Pos,0,1), World );
+    output.Pos = mul(  float4(input.Pos,0,1), world );
     output.Pos = mul( output.Pos, View );
     output.Pos = mul( output.Pos, Projection );
 	//output.Pos.x /= vMeshColor.r;
@@ -78,7 +78,7 @@ PS_INPUT VS( VS_INPUT input )
 //--------------------------------------------------------------------------------------
 float4 PS( PS_INPUT input) : SV_Target
 {
-	return input.Col * txDiffuse.Sample( samLinear2, input.Tex ) ;
+	return ps_color;// * txDiffuse.Sample( samLinear2, input.Tex );
 }
 
 

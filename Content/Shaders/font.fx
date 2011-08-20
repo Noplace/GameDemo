@@ -7,9 +7,11 @@
 //--------------------------------------------------------------------------------------
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
-Texture2D textPage1 : register( t0 );
-Texture2D textPage2 : register( t1 );
-Texture2D textPage3 : register( t2 );
+//Texture2D textPage1 : register( t0 );
+//Texture2D textPage2 : register( t1 );
+//Texture2D textPage3 : register( t2 );
+
+Texture2DArray textures : register( t0 );
 
 SamplerState samLinear
 {
@@ -79,15 +81,11 @@ float4 PS( PS_INPUT input) : SV_Target
 {
 
     float4 pixel = 0;
-	
-	//if (input.Page = 0) {
-		pixel = textPage1.Sample( samLinear, input.Tex ) * (1-input.Page)  ;
-	//}
+	uint index = 0;
+	pixel = textures.Sample( samLinear, float3(input.Tex,input.Page) );
 
-    //if (input.Page = 1) {
-		pixel += textPage2.Sample( samLinear, input.Tex )* (input.Page) ;
-    //}
 
+	/*
     // Are we rendering a colored image, or 
     // a character from only one of the channels
     if( dot(vector(1,1,1,1), input.Channel) )
@@ -98,9 +96,9 @@ float4 PS( PS_INPUT input) : SV_Target
         pixel.rgb = 1;
         pixel.a   = val;
     }
+	*/
+
 	//pixel.rgb = globalColor.rgb;
 	pixel.a = pixel.a * globalAlpha;
 	return pixel * input.Col;
-
-	//return input.Col * textPage1.Sample( samLinear, input.Tex ) ;
 }
