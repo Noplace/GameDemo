@@ -72,6 +72,16 @@ PS_INPUT VS( VS_INPUT input )
 	output.Page = input.Page;
     return output;
 }
+/*
+[maxvertexcount(6)]
+void GS(triangle PS_INPUT input[3], inout TriangleStream<PS_INPUT> stream)
+{
+	stream.Append( input[0] );
+	stream.Append( input[1] );
+	stream.Append( input[2] );
+	stream.RestartStrip();
+
+}*/
 
 
 //--------------------------------------------------------------------------------------

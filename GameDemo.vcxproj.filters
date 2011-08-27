@@ -46,10 +46,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\arial31.fnt" />
-    <None Include="Content\arial31_0.png">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="Content\test.xml" />
     <None Include="Content\Fonts\arial24.fnt" />
     <None Include="Content\Fonts\arial24_00.png">
@@ -65,5 +61,9 @@
     <None Include="Content\Fonts\v1_1.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Content\Fonts\arial31_0.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Content\Fonts\arial31.fnt" />
   </ItemGroup>
 </Project>

@@ -1,11 +1,11 @@
-#include <Aurora/Code/game_engine.h>
+#include <Aurora/Code/aurora.h>
 #include <Aurora/Code/game_view.h>
 
-class MainScene1 : public game_engine::GameView {
+class MainScene1 : public aurora::GameView {
  public:
   MainScene1() : g_pTextureRV(NULL) { }
   ~MainScene1() {}
-  int Initialize(game_engine::Engine* engine);
+  int Initialize(aurora::Engine* engine);
   int Deinitialize();
   void Update(float delta_time);
   void Draw();

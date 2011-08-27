@@ -7,11 +7,11 @@
 
 namespace my_app {
 
-class MainScene3 : public game_engine::GameView {
+class MainScene3 : public aurora::GameView {
  public:
   MainScene3() { }
   ~MainScene3() {}
-  int Initialize(game_engine::Engine* engine) {
+  int Initialize(aurora::Engine* engine) {
     mainscene1.Initialize(engine);
     mainscene2.Initialize(engine);
     return S_OK;

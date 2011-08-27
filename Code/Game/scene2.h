@@ -1,12 +1,13 @@
-#include <Aurora/Code/game_engine.h>
+#include <Aurora/Code/aurora.h>
 #include <Aurora/Code/game_view.h>
+#include <Aurora/Code/tiles/tiles.h>
 #include <VisualEssence/Code/shape/arc.h>
 
-class MainScene2 : public game_engine::GameView {
+class MainScene2 : public aurora::GameView {
  public:
   MainScene2() { }
   ~MainScene2() {}
-  int Initialize(game_engine::Engine* engine);
+  int Initialize(aurora::Engine* engine);
   int Deinitialize();
   void Update(float delta_time);
   void Draw();
@@ -22,9 +23,10 @@ class MainScene2 : public game_engine::GameView {
   graphics::Buffer                        g_pCBChangesEveryFrame;
   //ID3D11ShaderResourceView*           g_pTextureRV ;
   XMMATRIX world;
-  game_engine::resource::TextureResource* tex_res1;
+  aurora::resource::TextureResource* tex_res1;
   acGraphics::Font* font;
   graphics::Sprite my_sprite;
   graphics::shape::Arc my_arc1;
   graphics::shape::Arc my_arc2;
+  aurora::tiles::Map map;
 };

@@ -26,14 +26,14 @@ int test(int a) {
   return a*a;
 }
 
-int MainScene1::Initialize(game_engine::Engine* engine) { 
+int MainScene1::Initialize(aurora::Engine* engine) { 
   GameView::Initialize(engine);
   
   //core::delegation::one::pair<graphics::Effect,int,void> p(&main_effect_,0);
   func.Bind<graphics::Effect>(main_effect_,&graphics::Effect::Begin);
   func = core::delegation::none::pair<graphics::Effect,int>(main_effect_,&graphics::Effect::Begin);
 
-  game_engine::resource::EffectResource* res = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(2);
+  aurora::resource::EffectResource* res = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(2);
   main_effect_ = res->effect();
   /*main_effect_.Initialize(&engine_->gfx_context());
   int hr;
@@ -249,7 +249,7 @@ void MainScene1::Draw() {
   CBChangesEveryFrame cb;
   cb.mWorld = XMMatrixTranspose( g_World );
   cb.vMeshColor = g_vMeshColor;
-  engine_->gfx_context().UpdateBuffer(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
 
 
   //

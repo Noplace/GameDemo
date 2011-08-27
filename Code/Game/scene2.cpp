@@ -18,16 +18,16 @@ extern XMFLOAT4    g_vMeshColor;
 ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
 
 
-int MainScene2::Initialize(game_engine::Engine* engine) { 
+int MainScene2::Initialize(aurora::Engine* engine) { 
   GameView::Initialize(engine);
 
-  game_engine::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(3);
+  aurora::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(3);
   main_effect_ = shader_res->effect();
 
   {
     font_writer_.Initialize(&engine_->gfx_context());
-    game_engine::resource::EffectResource* font_effect_ = engine_->resource_manager.GetResourceById<game_engine::resource::EffectResource>(4);
-    game_engine::resource::FontResource* fr = engine_->resource_manager.GetResourceById<game_engine::resource::FontResource>(7);
+    aurora::resource::EffectResource* font_effect_ = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(4);
+    aurora::resource::FontResource* fr = engine_->resource_manager.GetResourceById<aurora::resource::FontResource>(7);
     font = fr->font();
     font_writer_.set_font(font);
     font_writer_.set_effect(font_effect_->effect());
@@ -129,6 +129,10 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
   my_arc2.BuildTransform();
 
   
+  map.Initialize(&engine_->gfx_context(),20,20,16,16);
+  map.AddLayer();
+  map.Construct();
+
   g_pCBChangesEveryFrame.description.bind_flags = D3D11_BIND_CONSTANT_BUFFER;
   g_pCBChangesEveryFrame.description.usage = D3D11_USAGE_DEFAULT;
   g_pCBChangesEveryFrame.description.byte_width = sizeof(CBChangesEveryFrame);
@@ -138,7 +142,7 @@ int MainScene2::Initialize(game_engine::Engine* engine) {
       return hr;
 
   // Load the Texture
-  //tex_res1 = (game_engine::resource::TextureResource*)engine_->resource_manager.GetResourceById(5);
+  //tex_res1 = (aurora::resource::TextureResource*)engine_->resource_manager.GetResourceById(5);
   
 
 
@@ -206,7 +210,7 @@ void MainScene2::Update(float delta_time) {
     int min = (int)(engine_->total_time()/60000) % 60;
     char status1[50];
     sprintf(status1,"FPS\t: %d\nTime\t: %02u:%02u:%03u",engine_->fps(),min,sec,ms);
-    font_writer_.WriteML(0,0,0,status1,strlen(status1),0);
+    font_writer_.WriteML(status1,strlen(status1),0);
   }
 
     //camera_.view() = XMMatrixScaling(t,t,0);// * XMMatrixTranslation(0.5,0,0);
@@ -230,56 +234,60 @@ void MainScene2::Update(float delta_time) {
 
   my_arc1.BuildTransform();
   my_arc2.BuildTransform();
+  map.BuildTransform();
+  font_writer_.BuildTransform();
 }
 
 void MainScene2::Draw() {
 
+
   
-  //engine_->gfx_context().device_context()->OMSetDepthStencilState(m_depthDisabledStencilState, 0);
+
+  /*//engine_->gfx_context().device_context()->OMSetDepthStencilState(m_depthDisabledStencilState, 0);
   UINT stride = sizeof( SimpleVertex );
   UINT offset = 0;
   engine_->gfx_context().SetVertexBuffers(0,1,&g_vb,&stride,&offset);
   engine_->gfx_context().ClearIndexBuffer();
   engine_->gfx_context().SetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP );
+  */
 
+  
   main_effect_->Begin();
+  engine_->gfx_context().ClearShader(graphics::kShaderTypeGeometry);
   camera_.SetConstantBuffer(0);
 
   CBChangesEveryFrame cb;
   cb.world = XMMatrixTranspose( world );
   cb.ps_color = XMLoadFloat4(&g_vMeshColor);
-  engine_->gfx_context().UpdateBuffer(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
     
-  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetSamplers(0,1,NULL);
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypeVertex,2,1,&g_pCBChangesEveryFrame);
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
-  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->VSSetConstantBuffers( 2, 1, &g_pCBChangesEveryFrame );
-  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetConstantBuffers( 2, 1, &g_pCBChangesEveryFrame );
-  //ID3D11ShaderResourceView* src = tex_res1->srv();
-  //((graphics::ContextD3D11*)&engine_->gfx_context())->device_context()->PSSetShaderResources(0,1,&font_writer_.font()->pages[0]);
-  engine_->gfx_context().Draw(4,0);
-
 
   cb.world = XMMatrixTranspose( my_arc1.world() );
   cb.ps_color = my_arc1.color();
-  engine_->gfx_context().UpdateBuffer(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_arc1.Draw();
 
   cb.world = XMMatrixTranspose( my_arc2.world() );
   cb.ps_color = my_arc2.color();
-  engine_->gfx_context().UpdateBuffer(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_arc2.Draw();
 
 
+  cb.world = XMMatrixTranspose( map.world() );
+  cb.ps_color = XMLoadColor(&XMCOLOR(0xffffffff));
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  //map.Draw();
+
   cb.world = XMMatrixTranspose( my_sprite.world() );
   cb.ps_color = my_sprite.color();
-  engine_->gfx_context().UpdateBuffer(g_pCBChangesEveryFrame,&cb,NULL,0,0);
-
+  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_sprite.Draw();
+  
 
-  
-  
-  font_writer_.Draw(40);
+  font_writer_.UpdateConstantBuffer();
+  font_writer_.Draw();  
 }
 
 
