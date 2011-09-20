@@ -28,7 +28,7 @@ void DisplayWindow::Initialize() {
   SetClientSize(640,480);
   Center();
   Show();
-
+  
   game.Initialize(this);
 }
 
@@ -49,6 +49,23 @@ int DisplayWindow::OnDestroy(WPARAM wParam,LPARAM lParam) {
 
 int DisplayWindow::OnCommand(WPARAM wParam,LPARAM lParam) {
   return 0;
+}
+
+int DisplayWindow::OnKeyDown(WPARAM wParam,LPARAM lParam) {
+  return 0;
+}
+
+int DisplayWindow::OnKeyUp(WPARAM wParam,LPARAM lParam) {
+  return 0;
+}
+
+int DisplayWindow::OnMouseMove(WPARAM wParam,LPARAM lParam) {
+  return 0;
+}
+
+int DisplayWindow::PreProcessMessages(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+  game.HandleWindowMessages(hwnd,uMsg,wParam,lParam);
+  return -1; //to enable normal message processing
 }
 
 }

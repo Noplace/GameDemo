@@ -7,22 +7,29 @@ struct SimpleVertex
     XMFLOAT4 Color;
 };
 
-struct CBChangesEveryFrame
-{
+struct ConstantBuffer2Type {
     XMMATRIX world;
+    bool enable_texture;
     XMVECTOR ps_color;
 };
-
-extern ID3D11BlendState* blend_state;
-extern XMFLOAT4    g_vMeshColor;
-ID3D11DepthStencilState* m_depthDisabledStencilState = NULL;
-
 
 int MainScene2::Initialize(aurora::Engine* engine) { 
   GameView::Initialize(engine);
 
-  aurora::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(3);
-  main_effect_ = shader_res->effect();
+  //aurora::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(3);
+  {
+
+    aurora::resource::Resource* shader_res = engine_->resource_manager.GetResourceById<aurora::resource::Resource>(3);
+    graphics::Effect::Entry entry_list[] = {
+      {"VS","vs_5_0"},
+      {"PS","ps_5_0"},
+      {"PSTex","ps_5_0"},
+      {NULL,NULL},
+    };
+    main_effect_.Initialize(&engine_->gfx_context());
+    main_effect_.CreateFromMemory2(entry_list,shader_res->data_pointer,shader_res->data_length);
+    shader_res->Unload();
+  }
 
   {
     font_writer_.Initialize(&engine_->gfx_context());
@@ -36,51 +43,8 @@ int MainScene2::Initialize(aurora::Engine* engine) {
   int hr;
   
 
-  D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;
-  // Clear the second depth stencil state before setting the parameters.
-  ZeroMemory(&depthDisabledStencilDesc, sizeof(depthDisabledStencilDesc));
 
-  // Now create a second depth stencil state which turns off the Z buffer for 2D rendering.  The only difference is 
-  // that DepthEnable is set to false, all other parameters are the same as the other depth stencil state.
-  depthDisabledStencilDesc.DepthEnable = true;
-  depthDisabledStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-  depthDisabledStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
-  depthDisabledStencilDesc.StencilEnable = false;
-  depthDisabledStencilDesc.StencilReadMask = 0xFF;
-  depthDisabledStencilDesc.StencilWriteMask = 0xFF;
-  depthDisabledStencilDesc.FrontFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-  depthDisabledStencilDesc.FrontFace.StencilDepthFailOp = D3D11_STENCIL_OP_INCR;
-  depthDisabledStencilDesc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-  depthDisabledStencilDesc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-  depthDisabledStencilDesc.BackFace.StencilFailOp = D3D11_STENCIL_OP_KEEP;
-  depthDisabledStencilDesc.BackFace.StencilDepthFailOp = D3D11_STENCIL_OP_DECR;
-  depthDisabledStencilDesc.BackFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
-  depthDisabledStencilDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-
-	// Create the state using the device.
-  hr = engine_->gfx_context().device()->CreateDepthStencilState(&depthDisabledStencilDesc, &m_depthDisabledStencilState);
-	if (FAILED(hr)){
-		return hr;
-	}
-
-  D3D11_BLEND_DESC BlendStateDescription;
-  ZeroMemory(&BlendStateDescription,sizeof(BlendStateDescription));
-  BlendStateDescription.AlphaToCoverageEnable = false;
-  BlendStateDescription.RenderTarget[0].BlendEnable = true;
-
-  BlendStateDescription.RenderTarget[0].SrcBlend                  = D3D11_BLEND_SRC_ALPHA;        //D3D11_BLEND_SRC_COLOR;
-  BlendStateDescription.RenderTarget[0].DestBlend                 = D3D11_BLEND_INV_SRC_ALPHA;//D3D11_BLEND_DEST_COLOR;
-  BlendStateDescription.RenderTarget[0].SrcBlendAlpha             = D3D11_BLEND_ONE;//D3D11_BLEND_SRC_ALPHA;
-  BlendStateDescription.RenderTarget[0].DestBlendAlpha    = D3D11_BLEND_ONE;//D3D11_BLEND_DEST_ALPHA;
-  BlendStateDescription.RenderTarget[0].BlendOp                   = D3D11_BLEND_OP_ADD;
-  BlendStateDescription.RenderTarget[0].BlendOpAlpha              = D3D11_BLEND_OP_ADD;
-  BlendStateDescription.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
-    
-  engine_->gfx_context().device()->CreateBlendState(&BlendStateDescription,&blend_state);
-  float blendFactor[] = {1,1, 1, 1};
-      UINT sampleMask   = 0xffffffff;
-  engine_->gfx_context().device_context()->OMSetBlendState(blend_state,blendFactor,sampleMask);
-    
+ 
 
   camera_.Ortho2D();
   
@@ -106,10 +70,12 @@ int MainScene2::Initialize(aurora::Engine* engine) {
  
   
   my_sprite.Initialize(&engine_->gfx_context());
-  my_sprite.SetSize(100,100);
-  my_sprite.SetTopLeft(100,100);
-  my_sprite.SetColor(XMCOLOR(0xffffff10));
-  my_sprite.SetUV(0,0,1,1);
+  my_sprite.SetSize(20,25);
+  my_sprite.SetTopLeft(300,100);
+  my_sprite.SetColor(XMCOLOR(0xffffffff));
+  float uv[4] = {float(48.0f/228) , float(170.0f/224) , float(72.0f/228) , float(195.0f/224)  };
+  my_sprite.SetUV(uv[0],uv[1],uv[2],uv[3]);
+  my_sprite.SetOrder(-1);
   my_sprite.Construct();
   my_sprite.BuildTransform();
 
@@ -119,10 +85,11 @@ int MainScene2::Initialize(aurora::Engine* engine) {
   my_arc1.SetTopLeft(400,100);
   my_arc1.SetColor(XMCOLOR(0xffffff10));
   my_arc1.Construct();
+  my_arc1.SetOrder(-2);
   my_arc1.BuildTransform();
 
   my_arc2.Initialize(&engine_->gfx_context());
-  my_arc2.SetParams(90,0.3,1.6,7);
+  my_arc2.SetParams(90,0.3f,1.6f,7);
   my_arc2.SetTopLeft(400,100);
   my_arc2.SetColor(XMCOLOR(0xffffff10));
   my_arc2.Construct();
@@ -135,7 +102,7 @@ int MainScene2::Initialize(aurora::Engine* engine) {
 
   g_pCBChangesEveryFrame.description.bind_flags = D3D11_BIND_CONSTANT_BUFFER;
   g_pCBChangesEveryFrame.description.usage = D3D11_USAGE_DEFAULT;
-  g_pCBChangesEveryFrame.description.byte_width = sizeof(CBChangesEveryFrame);
+  g_pCBChangesEveryFrame.description.byte_width = sizeof(ConstantBuffer2Type);
   g_pCBChangesEveryFrame.description.cpu_access_flags = 0;
   hr = engine_->gfx_context().CreateBuffer(g_pCBChangesEveryFrame,NULL);
   if( FAILED( hr ) )
@@ -186,10 +153,10 @@ int MainScene2::Deinitialize() {
     engine_->gfx_context().DestroyBuffer(g_vb);
     engine_->gfx_context().DestroyBuffer(g_ib);
   }
-  SafeRelease(&blend_state);
-  SafeRelease(&m_depthDisabledStencilState);
 
   font_writer_.Deinitialize();
+
+  main_effect_.Deinitialize();
   return S_OK;
 }
 
@@ -223,12 +190,8 @@ void MainScene2::Update(float delta_time) {
   uint32_t centery = this->engine_->gfx_context().height()/2;
   world = XMMatrixTranslation(centerx+move_x,centery+move_y,0);// * XMMatrixRotationAxis(vAxisZ,t);//XMMatrixRotationY( t );
 
-  // Modify the color
-  g_vMeshColor.x = ( sinf( t * 1.0f ) + 1.0f ) * 0.5f;
-  g_vMeshColor.y = ( cosf( t * 3.0f ) + 1.0f ) * 0.5f;
-  g_vMeshColor.z = ( sinf( t * 5.0f ) + 1.0f ) * 0.5f;
-
-  
+  //my_sprite.world() = XMMatrixTranslation(centerx+move_x,centery+move_y,10);
+  //my_sprite.SetTopLeft(centerx+move_x,centery+move_y);
   my_sprite.BuildTransform();
 
 
@@ -242,9 +205,9 @@ void MainScene2::Draw() {
 
 
   
+  //engine_->gfx_context().SetDepthState(null);
 
-  /*//engine_->gfx_context().device_context()->OMSetDepthStencilState(m_depthDisabledStencilState, 0);
-  UINT stride = sizeof( SimpleVertex );
+  /*UINT stride = sizeof( SimpleVertex );
   UINT offset = 0;
   engine_->gfx_context().SetVertexBuffers(0,1,&g_vb,&stride,&offset);
   engine_->gfx_context().ClearIndexBuffer();
@@ -252,36 +215,47 @@ void MainScene2::Draw() {
   */
 
   
-  main_effect_->Begin();
+  //main_effect_->Begin();
+  
+  engine_->gfx_context().SetInputLayout(main_effect_.input_layout());
+  engine_->gfx_context().SetShader(main_effect_.vs(0));
+  engine_->gfx_context().SetShader(main_effect_.ps(0));
+
   engine_->gfx_context().ClearShader(graphics::kShaderTypeGeometry);
   camera_.SetConstantBuffer(0);
 
-  CBChangesEveryFrame cb;
-  cb.world = XMMatrixTranspose( world );
-  cb.ps_color = XMLoadFloat4(&g_vMeshColor);
-  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
-    
+  ConstantBuffer2Type cb;
+
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypeVertex,2,1,&g_pCBChangesEveryFrame);
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
 
   cb.world = XMMatrixTranspose( my_arc1.world() );
   cb.ps_color = my_arc1.color();
+  cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_arc1.Draw();
 
   cb.world = XMMatrixTranspose( my_arc2.world() );
   cb.ps_color = my_arc2.color();
+  cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_arc2.Draw();
 
 
   cb.world = XMMatrixTranspose( map.world() );
   cb.ps_color = XMLoadColor(&XMCOLOR(0xffffffff));
+  cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   //map.Draw();
 
+
+  aurora::resource::TextureResource* sprite_texture = engine_->resource_manager.GetResourceById<aurora::resource::TextureResource>(100);
+  ID3D11ShaderResourceView* srv = sprite_texture->srv();
+  engine_->gfx_context().SetShader(main_effect_.ps(1));
+  engine_->gfx_context().SetShaderResources(graphics::kShaderTypePixel,0,1,(void**)&(srv));
   cb.world = XMMatrixTranspose( my_sprite.world() );
   cb.ps_color = my_sprite.color();
+  cb.enable_texture = true;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   my_sprite.Draw();
   

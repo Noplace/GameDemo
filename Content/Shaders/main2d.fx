@@ -26,7 +26,6 @@ BlendState NoBlend
 };
 
 
-
 cbuffer cbCamera : register( b0 )
 {
     matrix View;
@@ -36,6 +35,7 @@ cbuffer cbCamera : register( b0 )
 cbuffer cbChangesEveryFrame : register( b2 )
 {
     matrix world;
+	bool enable_texture;
     float4 ps_color;
 };
 
@@ -43,16 +43,16 @@ cbuffer cbChangesEveryFrame : register( b2 )
 //--------------------------------------------------------------------------------------
 struct VS_INPUT
 {
-    float2 Pos : POSITION;
-    float2 Tex : TEXCOORD0;
-	float4  Col : COLOR0;
+    float3 pos : POSITION;
+    float2 uv : TEXCOORD0;
+	float4 color : COLOR0;
 };
 
 struct PS_INPUT
 {
-    float4 Pos : SV_POSITION;
-    float2 Tex : TEXCOORD0;
-	float4 Col : COLOR0;
+    float4 pos : SV_POSITION;
+    float2 uv : TEXCOORD0;
+	float4 color : COLOR0;
 };
 
 //--------------------------------------------------------------------------------------
@@ -63,12 +63,12 @@ PS_INPUT VS( VS_INPUT input )
 	//PS_INPUT output = (PS_INPUT)0;
 	//return input;
     PS_INPUT output = (PS_INPUT)0;
-    output.Pos = mul(  float4(input.Pos,0,1), world );
-    output.Pos = mul( output.Pos, View );
-    output.Pos = mul( output.Pos, Projection );
-	//output.Pos.x /= vMeshColor.r;
-    output.Tex = input.Tex;
-	output.Col = input.Col;
+    output.pos = mul(  float4(input.pos,1), world );
+    output.pos = mul( output.pos, View );
+    output.pos = mul( output.pos, Projection );
+	//output.Pos.x -= output.Pos.z;
+    output.uv = input.uv;
+	output.color = input.color;
     return output;
 }
 
@@ -78,7 +78,15 @@ PS_INPUT VS( VS_INPUT input )
 //--------------------------------------------------------------------------------------
 float4 PS( PS_INPUT input) : SV_Target
 {
-	return input.Col*ps_color;// * txDiffuse.Sample( samLinear2, input.Tex );
+	//if (enable_texture == true)
+	//	return input.Col*ps_color * txDiffuse.Sample( samLinear2, input.Tex );
+	//else
+		return input.color*ps_color;
+}
+
+float4 PSTex( PS_INPUT input) : SV_Target
+{
+	return input.color*ps_color * txDiffuse.Sample( samLinear2, input.uv );
 }
 
 

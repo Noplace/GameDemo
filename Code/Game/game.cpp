@@ -64,5 +64,9 @@ void Game::Loop() {
   engine.Loop();
 }
 
+void Game::HandleWindowMessages(HWND window_handle, UINT message, WPARAM wparam, LPARAM lparam) {
+  engine.HandleWindowMessages(window_handle,message,wparam,lparam);
+}
+
 }
 

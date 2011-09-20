@@ -20,6 +20,10 @@ class DisplayWindow: public core::windows::Window {
     int OnCreate(WPARAM wParam,LPARAM lParam);
     int OnDestroy(WPARAM wParam,LPARAM lParam);
     int OnCommand(WPARAM wParam,LPARAM lParam);
+    int OnKeyDown(WPARAM wParam,LPARAM lParam);
+    int OnKeyUp(WPARAM wParam,LPARAM lParam);
+    int OnMouseMove(WPARAM wParam,LPARAM lParam);
+    int PreProcessMessages(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
   private:
     Game game;
 };

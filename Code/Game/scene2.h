@@ -12,11 +12,12 @@ class MainScene2 : public aurora::GameView {
   void Update(float delta_time);
   void Draw();
  private:
-  graphics::Effect* main_effect_;
+  //graphics::Effect* main_effect_;
+   graphics::Effect main_effect_;
   
   float move_z,move_x,move_y;
-  core::animation::CubicMotion motion1;
-  core::animation::Spiral spiral;
+  aurora::animation::CubicMotion motion1;
+  aurora::animation::Spiral spiral;
   graphics::font::Writer font_writer_;
   graphics::Buffer                    g_vb;
   graphics::Buffer                    g_ib;

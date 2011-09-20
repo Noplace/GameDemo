@@ -11,11 +11,9 @@ struct SimpleVertex
     XMFLOAT2 Tex;
 };
 
-
-struct CBChangesEveryFrame
-{
-    XMMATRIX mWorld;
-    XMFLOAT4 vMeshColor;
+struct ConstantBuffer2Type {
+    XMMATRIX world;
+    XMFLOAT4 color;
 };
 
 
@@ -145,7 +143,7 @@ int MainScene1::Initialize(aurora::Engine* engine) {
     
   g_pCBChangesEveryFrame.description.bind_flags = D3D11_BIND_CONSTANT_BUFFER;
   g_pCBChangesEveryFrame.description.usage = D3D11_USAGE_DEFAULT;
-  g_pCBChangesEveryFrame.description.byte_width = sizeof(CBChangesEveryFrame);
+  g_pCBChangesEveryFrame.description.byte_width = sizeof(ConstantBuffer2Type);
   g_pCBChangesEveryFrame.description.cpu_access_flags = 0;
   hr = engine_->gfx_context().CreateBuffer(g_pCBChangesEveryFrame,NULL);
   if( FAILED( hr ) )
@@ -246,9 +244,9 @@ void MainScene1::Draw() {
 
 
 
-  CBChangesEveryFrame cb;
-  cb.mWorld = XMMatrixTranspose( g_World );
-  cb.vMeshColor = g_vMeshColor;
+  ConstantBuffer2Type cb;
+  cb.world = XMMatrixTranspose( g_World );
+  cb.color = g_vMeshColor;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
 
 

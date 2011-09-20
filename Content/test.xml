@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
   <resource uid="2" scope="1" type="6" filename="Content\Shaders\main.fx"></resource>
-  <resource uid="3" scope="1" type="6" filename="Content\Shaders\main2d.fx"></resource>
+  <resource uid="3" scope="1" type="4" filename="Content\Shaders\main2d.fx"></resource>
   <resource uid="4" scope="1" type="6" filename="Content\Shaders\font.fx"></resource>
-  <resource uid="7" scope="1" type="5" filename="Content\Fonts\Arial\16.fnt"></resource>
+  <resource uid="7" scope="1" type="5" filename="Content\Fonts\V1\v1.fnt"></resource>
+  <resource uid="100" scope="1" type="1" filename="Content\Graphics\tyrian.shp.007D3C.png"></resource>  
 </resources>

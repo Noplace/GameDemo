@@ -19,6 +19,7 @@ class Game {
    ~Game();
    void Initialize(core::windows::Window* window);
    void Loop();
+   void HandleWindowMessages(HWND window_handle, UINT message, WPARAM wparam, LPARAM lparam);
  private:
   aurora::Engine engine;
   utilities::Timer main_timer_;
