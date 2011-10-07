@@ -239,29 +239,29 @@ void MainScene2::Draw() {
   this->shader_helper.PrepareDraw();
   shader_helper.SetColorShader();
 
-  engine_->gfx_context().SetInputLayout(main_effect_.input_layout());
-  engine_->gfx_context().SetShader(main_effect_.vs(0));
-  engine_->gfx_context().SetShader(main_effect_.ps(0));
+  //engine_->gfx_context().SetInputLayout(main_effect_.input_layout());
+  //engine_->gfx_context().SetShader(main_effect_.vs(0));
+  //engine_->gfx_context().SetShader(main_effect_.ps(0));
 
-  engine_->gfx_context().ClearShader(graphics::kShaderTypeGeometry);
-  camera_.SetConstantBuffer(0);
+  //engine_->gfx_context().ClearShader(graphics::kShaderTypeGeometry);
+  //camera_.SetConstantBuffer(0);
 
   graphics::shader::ConstantBuffer2Type cb;
 
-  engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypeVertex,2,1,&g_pCBChangesEveryFrame);
-  engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
+  //engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypeVertex,2,1,&g_pCBChangesEveryFrame);
+  //engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
 
   cb.world = XMMatrixTranspose( my_arc1.world() );
   cb.ps_color = my_arc1.color();
   cb.enable_texture = false;
-  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  //engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc1.Draw();
 
   cb.world = XMMatrixTranspose( my_arc2.world() );
   cb.ps_color = my_arc2.color();
   cb.enable_texture = false;
-  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  //engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc2.Draw();
 
@@ -274,19 +274,19 @@ void MainScene2::Draw() {
   aurora::resource::TextureResource* sprite_texture = engine_->resource_manager.GetResourceById<aurora::resource::TextureResource>(100);
   ID3D11ShaderResourceView* srv = sprite_texture->srv();
   shader_helper.SetTextureShader();
-  engine_->gfx_context().SetShader(main_effect_.ps(1));
+  //engine_->gfx_context().SetShader(main_effect_.ps(1));
   engine_->gfx_context().SetShaderResources(graphics::kShaderTypePixel,0,1,(void**)&(srv));
   cb.world = XMMatrixTranspose( my_sprite.world() );
   cb.ps_color = my_sprite.color();
   cb.enable_texture = true;
-  engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  //engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   shader_helper.UpdateChangesEveryFrame(&cb);
   my_sprite.Draw();
 
 
   shader_helper.SetTexturePagesShader();
-  engine_->gfx_context().SetShader(main_effect_.ps(2));
-  font_writer_.UpdateConstantBuffer();
+  //engine_->gfx_context().SetShader(main_effect_.ps(2));
+  //font_writer_.UpdateConstantBuffer();
   shader_helper.UpdateChangesEveryFrame(&font_writer_.misc_buffer_shader_);
   font_writer_.Draw();  
 
