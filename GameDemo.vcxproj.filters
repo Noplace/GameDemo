@@ -64,5 +64,6 @@
     <None Include="Content\Graphics\tyrian.shp.007D3C.png">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="todo.txt" />
   </ItemGroup>
 </Project>

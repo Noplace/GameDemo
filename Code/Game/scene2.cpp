@@ -7,15 +7,15 @@ struct SimpleVertex
     XMFLOAT4 Color;
 };
 
-struct ConstantBuffer2Type {
-    XMMATRIX world;
-    bool enable_texture;
-    XMVECTOR ps_color;
-};
+
 
 int MainScene2::Initialize(aurora::Engine* engine) { 
   GameView::Initialize(engine);
 
+  gui_.set_engine(engine);
+  engine->process_manager().AddProcess(&gui_);
+  shader_helper.Initialize(&engine->gfx_context());
+  
   //aurora::resource::EffectResource* shader_res = engine_->resource_manager.GetResourceById<aurora::resource::EffectResource>(3);
   {
 
@@ -24,10 +24,12 @@ int MainScene2::Initialize(aurora::Engine* engine) {
       {"VS","vs_5_0"},
       {"PS","ps_5_0"},
       {"PSTex","ps_5_0"},
+      {"PSFont","ps_5_0"},
       {NULL,NULL},
     };
     main_effect_.Initialize(&engine_->gfx_context());
     main_effect_.CreateFromMemory2(entry_list,shader_res->data_pointer,shader_res->data_length);
+    shader_helper.CreateFromMemory(shader_res->data_pointer,shader_res->data_length);
     shader_res->Unload();
   }
 
@@ -42,8 +44,12 @@ int MainScene2::Initialize(aurora::Engine* engine) {
 
   int hr;
   
+  mainmenu.set_font(font);
+  mainmenu.AddItem("Item 1");
+  mainmenu.AddItem("Item 2");
+  mainmenu.AddItem("Item 2");
 
-
+  gui_.AddElement(&mainmenu);
  
 
   camera_.Ortho2D();
@@ -102,7 +108,7 @@ int MainScene2::Initialize(aurora::Engine* engine) {
 
   g_pCBChangesEveryFrame.description.bind_flags = D3D11_BIND_CONSTANT_BUFFER;
   g_pCBChangesEveryFrame.description.usage = D3D11_USAGE_DEFAULT;
-  g_pCBChangesEveryFrame.description.byte_width = sizeof(ConstantBuffer2Type);
+  g_pCBChangesEveryFrame.description.byte_width = sizeof(graphics::shader::ConstantBuffer2Type);
   g_pCBChangesEveryFrame.description.cpu_access_flags = 0;
   hr = engine_->gfx_context().CreateBuffer(g_pCBChangesEveryFrame,NULL);
   if( FAILED( hr ) )
@@ -138,7 +144,7 @@ int MainScene2::Initialize(aurora::Engine* engine) {
   engine_->animation().tween_list.push_back(&spiral);
   spiral.Play();
 
-  font_writer_.PrepareWrite(51);
+  font_writer_.PrepareWrite(512);
   
   return S_OK; 
 }
@@ -157,6 +163,7 @@ int MainScene2::Deinitialize() {
   font_writer_.Deinitialize();
 
   main_effect_.Deinitialize();
+  shader_helper.Deinitialize();
   return S_OK;
 }
 
@@ -165,18 +172,30 @@ int MainScene2::Deinitialize() {
 void MainScene2::Update(float delta_time) {
     // Update our time
   static float t = 0.0f;
- 
+ aurora::input::Controller* ctrl = &engine_->input().controller1;
   {
     t += (3.14f / 5000);
     my_sprite.SetRotate(t);
     //my_arc1.SetRotate(t);
-    my_arc2.SetRotate(-t);
+    my_arc2.SetRotate(-ctrl->RightThumbDirection());
     float f = engine_->total_time();
     int ms = ((int)engine_->total_time()) % 1000;
     int sec = (int)(engine_->total_time()/1000) % 60;
     int min = (int)(engine_->total_time()/60000) % 60;
-    char status1[50];
-    sprintf(status1,"FPS\t: %d\nTime\t: %02u:%02u:%03u",engine_->fps(),min,sec,ms);
+    char status1[512];
+    char input_info[255];
+    
+    sprintf(input_info,"Controller 1\nEnabled: %d\nA: %d\nB: %d\nUp: %d\nLeft Trig: %0.6f\nRight T D: %0.6f\nRight T M: %0.6f",
+      ctrl->enabled(),
+      ctrl->A(),
+      ctrl->B(),
+      ctrl->Up(),
+      ctrl->LeftTrigger(),
+      ctrl->RightThumbDirection(),
+      ctrl->RightThumbMagnitude());
+    
+
+    sprintf(status1,"FPS\t: %d\nTime\t: %02u:%02u:%03u\n%s",engine_->fps(),min,sec,ms,input_info);
     font_writer_.WriteML(status1,strlen(status1),0);
   }
 
@@ -217,6 +236,9 @@ void MainScene2::Draw() {
   
   //main_effect_->Begin();
   
+  this->shader_helper.PrepareDraw();
+  shader_helper.SetColorShader();
+
   engine_->gfx_context().SetInputLayout(main_effect_.input_layout());
   engine_->gfx_context().SetShader(main_effect_.vs(0));
   engine_->gfx_context().SetShader(main_effect_.ps(0));
@@ -224,7 +246,7 @@ void MainScene2::Draw() {
   engine_->gfx_context().ClearShader(graphics::kShaderTypeGeometry);
   camera_.SetConstantBuffer(0);
 
-  ConstantBuffer2Type cb;
+  graphics::shader::ConstantBuffer2Type cb;
 
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypeVertex,2,1,&g_pCBChangesEveryFrame);
   engine_->gfx_context().SetConstantBuffers(graphics::kShaderTypePixel,2,1,&g_pCBChangesEveryFrame);
@@ -233,35 +255,42 @@ void MainScene2::Draw() {
   cb.ps_color = my_arc1.color();
   cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc1.Draw();
 
   cb.world = XMMatrixTranspose( my_arc2.world() );
   cb.ps_color = my_arc2.color();
   cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc2.Draw();
 
-
-  cb.world = XMMatrixTranspose( map.world() );
+  /*cb.world = XMMatrixTranspose( map.world() );
   cb.ps_color = XMLoadColor(&XMCOLOR(0xffffffff));
   cb.enable_texture = false;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
-  //map.Draw();
-
+  map.Draw();*/
 
   aurora::resource::TextureResource* sprite_texture = engine_->resource_manager.GetResourceById<aurora::resource::TextureResource>(100);
   ID3D11ShaderResourceView* srv = sprite_texture->srv();
+  shader_helper.SetTextureShader();
   engine_->gfx_context().SetShader(main_effect_.ps(1));
   engine_->gfx_context().SetShaderResources(graphics::kShaderTypePixel,0,1,(void**)&(srv));
   cb.world = XMMatrixTranspose( my_sprite.world() );
   cb.ps_color = my_sprite.color();
   cb.enable_texture = true;
   engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
+  shader_helper.UpdateChangesEveryFrame(&cb);
   my_sprite.Draw();
-  
 
+
+  shader_helper.SetTexturePagesShader();
+  engine_->gfx_context().SetShader(main_effect_.ps(2));
   font_writer_.UpdateConstantBuffer();
+  shader_helper.UpdateChangesEveryFrame(&font_writer_.misc_buffer_shader_);
   font_writer_.Draw();  
+
+  //gui_.Draw();
 }
 
 

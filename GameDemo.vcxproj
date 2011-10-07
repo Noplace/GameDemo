@@ -97,6 +97,7 @@
     <None Include="Content\Shaders\main.fx" />
     <None Include="Content\Shaders\main2d.fx" />
     <None Include="Content\test.xml" />
+    <None Include="todo.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aurora\Aurora.vcxproj">

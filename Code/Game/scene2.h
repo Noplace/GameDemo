@@ -1,7 +1,9 @@
 #include <Aurora/Code/aurora.h>
 #include <Aurora/Code/game_view.h>
 #include <Aurora/Code/tiles/tiles.h>
+#include <Aurora/Code/gui/menu.h>
 #include <VisualEssence/Code/shape/arc.h>
+#include <VisualEssence/Code/shader/shader2d_helper.h>
 
 class MainScene2 : public aurora::GameView {
  public:
@@ -30,4 +32,7 @@ class MainScene2 : public aurora::GameView {
   graphics::shape::Arc my_arc1;
   graphics::shape::Arc my_arc2;
   aurora::tiles::Map map;
+  aurora::gui::Gui gui_;
+  aurora::gui::Menu mainmenu;
+  graphics::shader::Shader2DHelper shader_helper;
 };

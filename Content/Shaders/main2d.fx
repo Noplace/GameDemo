@@ -8,6 +8,7 @@
 // Constant Buffer Variables
 //--------------------------------------------------------------------------------------
 Texture2D txDiffuse : register( t0 );
+Texture2DArray font_textures : register( t1 );
 SamplerState samLinear : register( s0 );
 
 SamplerState samLinear2
@@ -46,6 +47,7 @@ struct VS_INPUT
     float3 pos : POSITION;
     float2 uv : TEXCOORD0;
 	float4 color : COLOR0;
+	uint page : BLENDINDICES0;
 };
 
 struct PS_INPUT
@@ -53,6 +55,7 @@ struct PS_INPUT
     float4 pos : SV_POSITION;
     float2 uv : TEXCOORD0;
 	float4 color : COLOR0;
+	uint page : BLENDINDICES0;
 };
 
 //--------------------------------------------------------------------------------------
@@ -69,6 +72,7 @@ PS_INPUT VS( VS_INPUT input )
 	//output.Pos.x -= output.Pos.z;
     output.uv = input.uv;
 	output.color = input.color;
+	output.page = input.page;
     return output;
 }
 
@@ -88,6 +92,17 @@ float4 PSTex( PS_INPUT input) : SV_Target
 {
 	return input.color*ps_color * txDiffuse.Sample( samLinear2, input.uv );
 }
+
+float4 PSFont( PS_INPUT input) : SV_Target
+{
+    float4 pixel = 0;
+	uint index = 0;
+	pixel = font_textures.Sample( samLinear2, float3(input.uv,input.page) );
+
+	pixel.a = pixel.a * ps_color;
+	return pixel * input.color;
+}
+
 
 
 technique11

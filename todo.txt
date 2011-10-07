@@ -1,0 +1,3 @@
+somehow combine font shader with 2d shader
+seperate font writer from font object
+make gui with font object inside it
