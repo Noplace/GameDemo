@@ -54,6 +54,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>gdi32.lib;kernel32.lib;user32.lib;shell32.lib;uuid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -74,17 +75,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Code\display_window.cpp" />
+    <ClCompile Include="Code\display_window.cpp">
+      <GenerateXMLDocumentationFiles Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateXMLDocumentationFiles>
+    </ClCompile>
     <ClCompile Include="Code\Game\game.cpp" />
-    <ClCompile Include="Code\Game\scene1.cpp" />
-    <ClCompile Include="Code\Game\scene2.cpp" />
+    <ClCompile Include="Code\Game\Pong\paddle.cpp" />
+    <ClCompile Include="Code\Game\States\level.cpp" />
+    <ClCompile Include="Code\Game\Pong\ball.cpp" />
+    <ClCompile Include="Code\Game\Pong\system.cpp" />
+    <ClCompile Include="Code\Game\States\main_menu.cpp" />
     <ClCompile Include="Code\winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\display_window.h" />
     <ClInclude Include="Code\Game\game.h" />
-    <ClInclude Include="Code\Game\scene1.h" />
-    <ClInclude Include="Code\Game\scene2.h" />
+    <ClInclude Include="Code\Game\Pong\paddle.h" />
+    <ClInclude Include="Code\Game\Pong\physical_object.h" />
+    <ClInclude Include="Code\Game\States\level.h" />
+    <ClInclude Include="Code\Game\Pong\pong.h" />
+    <ClInclude Include="Code\Game\Pong\ball.h" />
+    <ClInclude Include="Code\Game\Pong\system.h" />
+    <ClInclude Include="Code\Game\States\main_menu.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Fonts\arial24.fnt" />
@@ -92,6 +103,8 @@
     <None Include="Content\Fonts\v1.fnt" />
     <None Include="Content\Fonts\v1_0.png" />
     <None Include="Content\Fonts\v1_1.png" />
+    <None Include="Content\Graphics\ball.png" />
+    <None Include="Content\Graphics\ff_pointer.png" />
     <None Include="Content\Graphics\tyrian.shp.007D3C.png" />
     <None Include="Content\Shaders\font.fx" />
     <None Include="Content\Shaders\main.fx" />

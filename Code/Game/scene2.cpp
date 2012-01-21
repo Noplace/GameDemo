@@ -57,7 +57,13 @@ int MainScene2::Initialize(aurora::Engine* engine) {
   my_arc2.Construct();
   my_arc2.BuildTransform();
 
-  
+  paddle1.Initialize(&engine_->gfx_context());
+  paddle1.SetParams(30,180);
+  paddle1.SetTopLeft(1,1);
+  paddle1.SetColor(XMCOLOR(0xffffffff));
+  paddle1.Construct();
+  paddle1.BuildTransform();
+
   map.Initialize(&engine_->gfx_context(),20,20,16,16);
   map.AddLayer();
   map.Construct();
@@ -95,6 +101,9 @@ int MainScene2::Initialize(aurora::Engine* engine) {
 
   font_writer_.PrepareWrite(512);
   
+  pongsystem.ball.radius = 26;
+  pongsystem.Initialize();
+  
   return S_OK; 
 }
 
@@ -117,6 +126,9 @@ int MainScene2::Deinitialize() {
 
 
 void MainScene2::Update(float delta_time) {
+
+  pongsystem.Update(delta_time);
+
     // Update our time
   static float t = 0.0f;
  aurora::input::Controller* ctrl = &engine_->input().controller1;
@@ -153,14 +165,18 @@ void MainScene2::Update(float delta_time) {
   uint32_t centerx = this->engine_->gfx_context().width()/2;
   uint32_t centery = this->engine_->gfx_context().height()/2;
   world = XMMatrixTranslation(centerx+move_x,centery+move_y,0);// * XMMatrixRotationAxis(vAxisZ,t);//XMMatrixRotationY( t );
-
-  //my_sprite.world() = XMMatrixTranslation(centerx+move_x,centery+move_y,10);
-  //my_sprite.SetTopLeft(centerx+move_x,centery+move_y);
-  my_sprite.BuildTransform();
-
+  
+  {
+    XMFLOAT2 pos;
+    XMStoreFloat2(&pos,pongsystem.ball.position);
+    //my_sprite.world() = XMMatrixTranslation(centerx+move_x,centery+move_y,10);
+    my_sprite.SetTopLeft(pos.x-pongsystem.ball.radius,pos.y-pongsystem.ball.radius);//centerx+move_x,centery+move_y);
+    my_sprite.BuildTransform();
+  }
 
   my_arc1.BuildTransform();
   my_arc2.BuildTransform();
+  paddle1.BuildTransform();
   map.BuildTransform();
   font_writer_.BuildTransform();
 }
@@ -188,16 +204,20 @@ void MainScene2::Draw() {
   cb.world = XMMatrixTranspose( my_arc1.world() );
   cb.ps_color = my_arc1.color();
   cb.enable_texture = false;
-  //engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc1.Draw();
 
   cb.world = XMMatrixTranspose( my_arc2.world() );
   cb.ps_color = my_arc2.color();
   cb.enable_texture = false;
-  //engine_->gfx_context().UpdateSubresource(g_pCBChangesEveryFrame,&cb,NULL,0,0);
   shader_helper.UpdateChangesEveryFrame(&cb);
   my_arc2.Draw();
+
+  cb.world = XMMatrixTranspose( paddle1.world() );
+  cb.ps_color = paddle1.color();
+  cb.enable_texture = false;
+  shader_helper.UpdateChangesEveryFrame(&cb);
+  paddle1.Draw();
 
   /*cb.world = XMMatrixTranspose( map.world() );
   cb.ps_color = XMLoadColor(&XMCOLOR(0xffffffff));

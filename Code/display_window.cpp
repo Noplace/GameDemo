@@ -13,7 +13,10 @@
 namespace my_app {
 
 //const double M_PI = 3.14159265358979323846;
-
+/*
+  <summary>Constructor</summary>
+  <para>DisplayWindow Constructor</para>
+*/
 DisplayWindow::DisplayWindow() : core::windows::Window() {
   
 }

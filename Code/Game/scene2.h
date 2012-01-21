@@ -3,7 +3,9 @@
 #include <Aurora/Code/tiles/tiles.h>
 #include <Aurora/Code/gui/menu.h>
 #include <VisualEssence/Code/shape/arc.h>
+#include <VisualEssence/Code/shape/rectangle.h>
 #include <VisualEssence/Code/shader/shader2d_helper.h>
+#include "Pong/pong.h"
 
 class MainScene2 : public aurora::GameView {
  public:
@@ -25,10 +27,13 @@ class MainScene2 : public aurora::GameView {
   aurora::resource::TextureResource* tex_res1;
   acGraphics::Font* font;
   graphics::Sprite my_sprite;
+  graphics::shape::Rectangle paddle1;
+  graphics::shape::Rectangle paddle2;
   graphics::shape::Arc my_arc1;
   graphics::shape::Arc my_arc2;
   aurora::tiles::Map map;
   aurora::gui::Gui gui_;
   aurora::gui::Menu mainmenu;
   graphics::shader::Shader2DHelper shader_helper;
+  PongSystem pongsystem;
 };

@@ -4,5 +4,9 @@
   <resource uid="3" scope="1" type="4" filename="Content\Shaders\main2d.fx"></resource>
   <resource uid="4" scope="1" type="6" filename="Content\Shaders\font.fx"></resource>
   <resource uid="7" scope="1" type="5" filename="Content\Fonts\V1\v1.fnt"></resource>
-  <resource uid="100" scope="1" type="1" filename="Content\Graphics\tyrian.shp.007D3C.png"></resource>  
+  <resource uid="8" scope="1" type="5" filename="Content\Fonts\Starcraft\24.fnt"></resource>
+  <resource uid="9" scope="1" type="5" filename="Content\Fonts\Arial\16.fnt"></resource>
+  <resource uid="100" scope="1" type="1" filename="Content\Graphics\tyrian.shp.007D3C.png"></resource>
+  <resource uid="101" scope="1" type="1" filename="Content\Graphics\ball.png"></resource>
+  <resource uid="102" scope="1" type="1" filename="Content\Graphics\ff_pointer.png"></resource>
 </resources>

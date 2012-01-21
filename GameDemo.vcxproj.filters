@@ -15,33 +15,57 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\Game\game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Game\scene1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\Game\scene2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Code\display_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\winmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Game\Pong\paddle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Game\game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Game\Pong\system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Game\Pong\ball.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Game\States\main_menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Game\States\level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\display_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Game\Pong\pong.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Game\Pong\paddle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Game\Pong\physical_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Code\Game\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Game\scene1.h">
+    <ClInclude Include="Code\Game\Pong\system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\Game\scene2.h">
+    <ClInclude Include="Code\Game\Pong\ball.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\display_window.h">
+    <ClInclude Include="Code\Game\States\level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Game\States\main_menu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,5 +89,11 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="todo.txt" />
+    <None Include="Content\Graphics\ball.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Content\Graphics\ff_pointer.png">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
