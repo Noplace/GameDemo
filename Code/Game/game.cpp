@@ -8,10 +8,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-  state_manager_.Deinitialize();
-  font_writer_.Deinitialize();
-  shader_helper_.Deinitialize();
-  engine.Deinitialize();
+  Deinitialize();
 }
 
 
@@ -20,9 +17,17 @@ void Game::Initialize(core::windows::Window* window)  {
 
   window_ = window;
   main_timer_.Calibrate();
+  engine.log.Initialize("");
   engine.set_timer(&main_timer_);
   engine.set_window(window_);
-  engine.Initialize();
+  
+  auto hr = engine.Initialize();
+  if (hr!=S_OK) {
+    MessageBox(window->handle(),"Fatal App Error - please see log for details","ERROR",MB_OK|MB_ICONEXCLAMATION);
+    Deinitialize();
+    exit(0);
+  }
+
   engine.resource_manager.LoadXml("Content\\test.xml");
   //Initialize common core classes
   shader_helper_.Initialize(&engine.gfx_context());
@@ -51,6 +56,13 @@ void Game::Initialize(core::windows::Window* window)  {
   state_manager_.ChangeState(0);
   engine.current_scene = &state_manager_;
 
+}
+
+void Game::Deinitialize() {
+  state_manager_.Deinitialize();
+  font_writer_.Deinitialize();
+  shader_helper_.Deinitialize();
+  engine.Deinitialize();
 }
 
 void Game::Loop() {

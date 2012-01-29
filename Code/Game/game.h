@@ -19,6 +19,7 @@ class Game {
   Game();
   ~Game();
   void Initialize(core::windows::Window* window);
+  void Deinitialize();
   void Loop();
   void HandleWindowMessages(HWND window_handle, UINT message, WPARAM wparam, LPARAM lparam);
   graphics::font::Writer& font_writer() { return font_writer_; };
