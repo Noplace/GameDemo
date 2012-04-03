@@ -1,6 +1,6 @@
 /******************************************************************************
 * Filename    : display_window.cpp
-* Description : 
+* Description : main application window for displaying content
 * 
 *
 * 
